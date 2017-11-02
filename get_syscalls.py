@@ -55,8 +55,7 @@ syscall_32_64_urls = {
 
 non_standard_syscall_urls = {
 	"HPPA": "parisc/include/uapi/asm/unistd.h",
-	"HPPA64": "parisc/include/uapi/asm/unistd.h",
-	"AArch64": "../include/uapi/asm-generic/unistd.h"
+	"HPPA64": "parisc/include/uapi/asm/unistd.h"
 }
 
 def read_url(url, headers=None):
@@ -247,6 +246,8 @@ def yield_nr_defs(arch):
 	elif arch in non_standard_syscall_urls:
 		for line in _yield_nr_defs_unistd_helper(iter_unistd_h(non_standard_syscall_urls[arch])):
 			yield line
+	elif arch == "AArch64":
+		yield "public import mir.linux.arch.asm_generic.unistd;"
 	else:
 		for line in _yield_nr_defs_unistd_helper(iter_unistd_h(arch.lower()+"/include/uapi/asm/unistd.h")):
 			yield line
