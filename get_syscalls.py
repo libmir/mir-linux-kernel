@@ -2,8 +2,8 @@
 """
 Usage: python getsys_calls.py <all | specific architectures...>
 
-Generate the "mir/linux/arch/<arch>/uapi/asm/unistd.d' files by running
-this command in the folder containing "mir". You will need to be connected
+Generate the "source/mir/linux/arch/<arch>/uapi/_asm/unistd.d' files by
+this command in the containing folder. You will need to be connected
 to the internet. Architecture names are written exactly as corresponding
 version specifiers in the D programming language (see
 https://dlang.org/spec/version.html).
@@ -55,8 +55,7 @@ syscall_32_64_urls = {
 
 non_standard_syscall_urls = {
 	"HPPA": "parisc/include/uapi/asm/unistd.h",
-	"HPPA64": "parisc/include/uapi/asm/unistd.h",
-	"AArch64": "../include/uapi/asm-generic/unistd.h"
+	"HPPA64": "parisc/include/uapi/asm/unistd.h"
 }
 
 def read_url(url, headers=None):
@@ -194,7 +193,7 @@ def yield_nr_defs(arch):
 		for line in iter_syscall_table("X86_64"):
 			try:
 				if line[1] == "64":
-					yield "static if (size_t == 8) enum NR_"+line[2]+" = "+str(int(line[0]))+";"
+					yield "static if (size_t.sizeof == 8) enum NR_"+line[2]+" = "+str(int(line[0]))+";"
 				elif line[1] == "x32":#i.e. for x32 ABI
 					yield "version (D_X32) enum NR_"+line[2]+" = "+str(int(line[0]))+";"
 				else:
@@ -247,6 +246,8 @@ def yield_nr_defs(arch):
 	elif arch in non_standard_syscall_urls:
 		for line in _yield_nr_defs_unistd_helper(iter_unistd_h(non_standard_syscall_urls[arch])):
 			yield line
+	elif arch == "AArch64":
+		yield "public import mir.linux.arch.asm_generic.unistd;"
 	else:
 		for line in _yield_nr_defs_unistd_helper(iter_unistd_h(arch.lower()+"/include/uapi/asm/unistd.h")):
 			yield line
@@ -255,9 +256,9 @@ def write_nr_defs_file(arch):
 	#We might immediately get an web error.
 	#Don't create an empty file / erase the existing file if so.
 	lines = yield_nr_defs(arch)
-	fdir = "mir/linux/arch/"+arch.lower()+"/uapi/asm"
+	mname = "mir.linux.arch."+arch.lower()+".uapi._asm.unistd"
+	fdir = "source/mir/linux/arch/"+arch.lower()+"/uapi/_asm"
 	fpath = fdir + "/unistd.d"
-	mname = fpath[:-2].replace('/','.').lower()
 	print ("Writing "+fpath)
 	try:
 		os.makedirs(fdir)
@@ -287,7 +288,8 @@ if __name__ == "__main__":
 	arch_modules = []
 	for arg in argv:
 		arch_modules.append((arg, write_nr_defs_file(arg)))
-	fdir = "mir/linux/asm"
+	mname = "mir.linux._asm.unistd"
+	fdir = "source/mir/linux/_asm"
 	fpath = fdir+"/unistd.d"
 	try:
 		os.makedirs(fdir)
@@ -297,7 +299,7 @@ if __name__ == "__main__":
 		pass
 	print ("Writing "+fpath)
 	with open(fpath, "w") as f:
-		f.write("/++\nAuto-generated Linux syscall constants\n+/\nmodule mir.linux.asm.unistd.d\n")
+		f.write("/++\nAuto-generated Linux syscall constants\n+/\nmodule "+mname+";\n")
 		f.write("version(LDC) pragma(LDC_no_moduleinfo);\n\n")
 		first = True
 		for (arch, mname) in arch_modules:
@@ -306,4 +308,4 @@ if __name__ == "__main__":
 				f.write("version ("+arch+") public import "+mname+";\n")
 			else:
 				f.write("else version ("+arch+") public import "+mname+";\n")
-		f.write("else pragma(msg, \"Linux syscall constants not known for target architecture!\")\n")
+		f.write("else pragma(msg, \"Linux syscall constants not known for target architecture!\");\n")
