@@ -1,0 +1,21 @@
+{
+	"name": "mir-linux-kernel",
+	"authors": [
+		"Nathan Sashihara"
+	],
+	"description": "Linux system call numbers for different architectures",
+	"copyright": "Copyright © 2017, Nathan Sashihara",
+	"license": "BSL-1.0",
+	"dependencies": {
+	},
+	"buildTypes": {
+		"unittest": {
+			"buildOptions": ["unittests", "debugMode", "debugInfo"],
+			"versions": ["mir_linux_kernel_test"]
+		},
+		"unittest-cov": {
+			"buildOptions": ["unittests", "coverage", "debugMode", "debugInfo"],
+			"versions": ["mir_linux_kernel_test"]
+		}
+	}
+}
