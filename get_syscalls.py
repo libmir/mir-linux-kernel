@@ -169,21 +169,21 @@ def iter_unistd_h_section(path_from_arch, start_line, end_line):
 def _yield_nr_defs_unistd_helper(lines):#Each line is tuple
 	for line in lines:
 		try:
-			if line[0].startswith("__NR_"):
-				yield "enum "+line[0].lstrip("_")+" = "+line[1].replace("__NR_","NR_")+";"
+			if line[0].startswith("__NR"):
+				yield "enum "+line[0].lstrip("_")+" = "+line[1].replace("__NR","NR")+";"
 		except:
 			yield "// omitted " + " ".join(line)
 
 def _yield_nr_defs_unistd_helper_32_64(lines):#Each line is tuple
 	for line in lines:
 		try:
-			if line[0].startswith("__NR_"):
+			if line[0].startswith("__NR"):
 				if line[2] is None:
-					yield "enum "+line[0].lstrip('_')+" = "+line[1].replace("__NR_","NR_")+";"
+					yield "enum "+line[0].lstrip('_')+" = "+line[1].replace("__NR","NR")+";"
 				elif line[2] == 32:
-					yield "static if (size_t.sizeof == 4) enum "+line[0].lstrip("_")+" = "+line[1].replace("__NR_","NR_")+";"
+					yield "static if (size_t.sizeof == 4) enum "+line[0].lstrip("_")+" = "+line[1].replace("__NR","NR")+";"
 				elif line[2] == 64:
-					yield "static if (size_t.sizeof == 8) enum "+line[0].lstrip("_")+" = "+line[1].replace("__NR_","NR_")+";"
+					yield "static if (size_t.sizeof == 8) enum "+line[0].lstrip("_")+" = "+line[1].replace("__NR","NR")+";"
 				else:
 					raise Exception("bad mode in line: "+str(line))
 		except:
@@ -225,23 +225,23 @@ def yield_nr_defs(arch):
 		end_line = "#endif"
 		for line in iter_unistd_h_section(url, start_line, end_line):
 			try:
-				if line[0].startswith('__NR_'):
-					yield "enum "+line[0].lstrip('_')+" = "+line[1].replace('__NR_','NR_')+";"
+				if line[0].startswith("__NR"):
+					yield "enum "+line[0].lstrip('_')+" = "+line[1].replace("__NR","NR")+";"
 			except:
 				yield "// omitted " + " ".join(line)
 	elif arch == "SH":#SuperH
 		#32-bit
 		for line in iter_unistd_h(arch.lower()+"/include/uapi/asm/unistd_32.h"):
 			try:
-				if line[0].startswith("__NR_"):
-					yield "static if (size_t.sizeof == 4) enum "+line[0].lstrip("_")+" = "+line[1].replace("__NR_","NR_")+";"
+				if line[0].startswith("__NR"):
+					yield "static if (size_t.sizeof == 4) enum "+line[0].lstrip("_")+" = "+line[1].replace("__NR","NR")+";"
 			except:
 				yield "// omitted " + " ".join(line)
 		#64-bit
 		for line in iter_unistd_h(arch.lower()+"/include/uapi/asm/unistd_64.h"):
 			try:
-				if line[0].startswith("__NR_"):
-					yield "static if (size_t.sizeof == 8) enum "+line[0].lstrip("_")+" = "+line[1].replace("__NR_","NR_")+";"
+				if line[0].startswith("__NR"):
+					yield "static if (size_t.sizeof == 8) enum "+line[0].lstrip("_")+" = "+line[1].replace("__NR","NR")+";"
 			except:
 				yield "// omitted " + " ".join(line)
 	elif arch in non_standard_syscall_urls:
