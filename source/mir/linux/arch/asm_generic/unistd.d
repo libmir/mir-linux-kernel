@@ -4,13 +4,12 @@ Linux syscall constants. Human-edited.
 module mir.linux.arch.asm_generic.unistd;
 version(LDC) pragma(LDC_no_moduleinfo);
 
-static if (size_t.sizeof < 8) version = SYSCALL_COMPAT;
-else version (D_X32) version = SYSCALL_COMPAT;
+version (D_X32) private enum bool SYSCALL_COMPAT = true;
+else private enum bool SYSCALL_COMPAT = (size_t.sizeof < 8);
 
 version(AArch64) version = ARCH_WANT_RENAMEAT;
 
-static if (size_t.sizeof < 8) version = ARCH_WANT_SYNC_FILE_RANGE2;
-else version(SYSCALL_COMPAT) version = ARCH_WANT_SYNC_FILE_RANGE2;
+private enum bool ARCH_WANT_SYNC_FILE_RANGE2 = SYSCALL_COMPAT || (size_t.sizeof < 8);
 
 //Linux sets for H8/300 (arch/h8300):
 //ARCH_NOMMU
@@ -107,7 +106,7 @@ enum NR3264_fstat = 80;
 enum NR_sync = 81;
 enum NR_fsync = 82;
 enum NR_fdatasync = 83;
-version(ARCH_WANT_SYNC_FILE_RANGE2) enum NR_sync_file_range2 = 84;
+static if(ARCH_WANT_SYNC_FILE_RANGE2) enum NR_sync_file_range2 = 84;
 else enum NR_sync_file_range = 84;
 enum NR_timerfd_create = 85;
 enum NR_timerfd_settime = 86;
@@ -325,19 +324,19 @@ version(ARCH_WANT_SYSCALL_NO_FLAGS) enum NR_inotify_init = 1043;
 version(ARCH_WANT_SYSCALL_NO_FLAGS) enum NR_eventfd = 1044;
 version(ARCH_WANT_SYSCALL_NO_FLAGS) enum NR_signalfd = 1045;
 //enum NR_syscalls = (NR_signalfd+1);
-version(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_sendfile = 1046;
-version(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_ftruncate = 1047;
-version(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_truncate = 1048;
-version(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_stat = 1049;
-version(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_lstat = 1050;
-version(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_fstat = 1051;
-version(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_fcntl = 1052;
-version(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_fadvise64 = 1053;
-version(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_newfstatat = 1054;
-version(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_fstatfs = 1055;
-version(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_statfs = 1056;
-version(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_lseek = 1057;
-version(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_mmap = 1058;
+static if(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_sendfile = 1046;
+static if(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_ftruncate = 1047;
+static if(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_truncate = 1048;
+static if(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_stat = 1049;
+static if(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_lstat = 1050;
+static if(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_fstat = 1051;
+static if(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_fcntl = 1052;
+static if(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_fadvise64 = 1053;
+static if(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_newfstatat = 1054;
+static if(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_fstatfs = 1055;
+static if(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_statfs = 1056;
+static if(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_lseek = 1057;
+static if(SYSCALL_COMPAT) version(ARCH_WANT_SYSCALL_OFF_T) enum NR_mmap = 1058;
 //enum NR_syscalls = (NR_mmap+1);
 version(ARCH_WANT_SYSCALL_DEPRECATED) enum NR_alarm = 1059;
 version(ARCH_WANT_SYSCALL_DEPRECATED) enum NR_getpgrp = 1060;
@@ -361,9 +360,7 @@ version(ARCH_WANT_SYSCALL_DEPRECATED) enum NR_uselib = 1077;
 version(ARCH_WANT_SYSCALL_DEPRECATED) enum NR__sysctl = 1078;
 enum NR_fork = 1079;
 enum NR_syscalls = (NR_fork+1);
-version(SYSCALL_COMPAT) private enum bool isSyscallCompat = true;
-else private enum bool isSyscallCompat = false;
-static if (size_t.sizeof == 8 && !isSyscallCompat)
+static if (size_t.sizeof == 8 && !SYSCALL_COMPAT)
 {
     enum NR_fcntl = NR3264_fcntl;
     enum NR_statfs = NR3264_statfs;
