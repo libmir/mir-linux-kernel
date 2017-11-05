@@ -2,7 +2,7 @@
 Linux kernel headers
 
 #### Motivating Example
-Linux 3.17 added the `getrandom` syscall. Using it instead of `/dev/[u]?random` was a win. But we didn't think about all of the architectures that people might try building our library on, and soon we got a report from a user in Germany that our latest and greatest release was failing to compile on his Raspberry Pi.
+Linux 3.17 added the `getrandom` syscall. Using it instead of `/dev/[u]?random` was a win. But we didn't think about all of the architectures that people might try building our library on, and soon we got a report from a user that our latest and greatest release was failing to compile on Raspberry Pi.
 
 #### Example Usage
 ```d
