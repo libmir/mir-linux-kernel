@@ -13,7 +13,7 @@ import mir.linux._asm.unistd: NR_getrandom;
 *   getrandom() does not block in these cases, but instead
 *   immediately returns -1 with errno set to EAGAIN.
 */
-private ptrdiff_t genRandomImplSysNonBlocking()(void* ptr, size_t len) @nogc @trusted nothrow
+private ptrdiff_t genRandomImplSysNonBlocking()(scope void* ptr, size_t len) @nogc nothrow @system
 {
     return syscall(NR_getrandom, cast(size_t) ptr, len, GRND_NONBLOCK);
 }
