@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Usage: python getsys_calls.py <all | specific architectures...>
+Usage: python get_syscalls.py <all | specific architectures...>
 
 Generate the "source/mir/linux/arch/<arch>/uapi/_asm/unistd.d' files by
 this command in the containing folder. You will need to be connected
@@ -230,12 +230,12 @@ def yield_nr_defs(arch):
 				yield "// omitted " + " ".join(line)
 	elif arch == "SH":#SuperH
 		#32-bit
-		for line in iter_unistd_h(arch.lower()+"/include/uapi/asm/unistd_32.h"):
-			try:
-				if line[0].startswith("__NR"):
-					yield "static if (size_t.sizeof == 4) enum "+line[0].lstrip("_")+" = "+line[1].replace("__NR","NR")+";"
-			except:
-				yield "// omitted " + " ".join(line)
+		# for line in iter_unistd_h(arch.lower()+"/include/uapi/asm/unistd_32.h"):
+		# 	try:
+		# 		if line[0].startswith("__NR"):
+		# 			yield "static if (size_t.sizeof == 4) enum "+line[0].lstrip("_")+" = "+line[1].replace("__NR","NR")+";"
+		# 	except:
+		# 		yield "// omitted " + " ".join(line)
 		#64-bit
 		for line in iter_unistd_h(arch.lower()+"/include/uapi/asm/unistd_64.h"):
 			try:

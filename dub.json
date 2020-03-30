@@ -3,6 +3,7 @@
 	"authors": [
 		"Nathan Sashihara"
 	],
+    "targetType": "sourceLibrary",
 	"description": "Linux system call numbers for different architectures",
 	"copyright": "Copyright © 2017, Nathan Sashihara",
 	"license": "BSL-1.0",

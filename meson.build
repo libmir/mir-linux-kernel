@@ -1,9 +1,13 @@
-project('mir-linux-kernel', 'd', version : '1.0.0', license: 'BSL-1.0')
+project('mir-linux-kernel', 'd', version: '1.1.0', license: 'BSL-1.0')
 
-mir_linux_kernel_dir = include_directories('source/')
+description = 'Mir Linux Kernel - Linux system call numbers for different architectures'
 
-mir_linux_kernel_dep = declare_dependency(
-    include_directories: mir_linux_kernel_dir,
+directories = ['source']
+
+directories = include_directories(directories)
+
+this_dep = declare_dependency(
+    include_directories: directories,
 )
 
 install_subdir('source/',
@@ -11,10 +15,9 @@ install_subdir('source/',
     install_dir: 'include/d/' + meson.project_name(),
 )
 
-import('pkgconfig').generate(
-    name: meson.project_name(),
-    description: 'Linux kernel headers for Dlang.',
+import('pkgconfig').generate(this_lib,
+    description: description,
     subdirs: 'd/' + meson.project_name(),
-    version: meson.project_version(),
 )
- 
+
+mir_linux_kernel_dep = this_dep
