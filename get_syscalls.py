@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-Usage: python getsys_calls.py <all | specific architectures...>
+Usage: python get_syscalls.py <all | specific architectures...>
 
-Generate the "source/mir/linux/arch/<arch>/uapi/_asm/unistd.d' files by
+Generate the "source/mir/linux/arch/<arch>/uapi/_asm/unistd.di' files by
 this command in the containing folder. You will need to be connected
 to the internet. Architecture names are written exactly as corresponding
 version specifiers in the D programming language (see
@@ -230,12 +230,12 @@ def yield_nr_defs(arch):
 				yield "// omitted " + " ".join(line)
 	elif arch == "SH":#SuperH
 		#32-bit
-		for line in iter_unistd_h(arch.lower()+"/include/uapi/asm/unistd_32.h"):
-			try:
-				if line[0].startswith("__NR"):
-					yield "static if (size_t.sizeof == 4) enum "+line[0].lstrip("_")+" = "+line[1].replace("__NR","NR")+";"
-			except:
-				yield "// omitted " + " ".join(line)
+		# for line in iter_unistd_h(arch.lower()+"/include/uapi/asm/unistd_32.h"):
+		# 	try:
+		# 		if line[0].startswith("__NR"):
+		# 			yield "static if (size_t.sizeof == 4) enum "+line[0].lstrip("_")+" = "+line[1].replace("__NR","NR")+";"
+		# 	except:
+		# 		yield "// omitted " + " ".join(line)
 		#64-bit
 		for line in iter_unistd_h(arch.lower()+"/include/uapi/asm/unistd_64.h"):
 			try:
@@ -258,7 +258,7 @@ def write_nr_defs_file(arch):
 	lines = yield_nr_defs(arch)
 	mname = "mir.linux.arch."+arch.lower()+".uapi._asm.unistd"
 	fdir = "source/mir/linux/arch/"+arch.lower()+"/uapi/_asm"
-	fpath = fdir + "/unistd.d"
+	fpath = fdir + "/unistd.di"
 	print ("Writing "+fpath)
 	try:
 		os.makedirs(fdir)
@@ -290,7 +290,7 @@ if __name__ == "__main__":
 		arch_modules.append((arg, write_nr_defs_file(arg)))
 	mname = "mir.linux._asm.unistd"
 	fdir = "source/mir/linux/_asm"
-	fpath = fdir+"/unistd.d"
+	fpath = fdir+"/unistd.di"
 	try:
 		os.makedirs(fdir)
 	except:
