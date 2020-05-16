@@ -7,7 +7,17 @@ version(LDC) pragma(LDC_no_moduleinfo);
 version (D_X32) private enum bool SYSCALL_COMPAT = true;
 else private enum bool SYSCALL_COMPAT = (size_t.sizeof < 8);
 
-version(AArch64) version = ARCH_WANT_RENAMEAT;
+version(AArch64)
+{
+    version = ARCH_WANT_RENAMEAT;
+    version = ARCH_WANT_SYS_CLONE3;
+}
+version (RISCV64)
+{
+    import core.stdc.config : c_long;
+    static if ((void*).sizeof == 8 && c_long.sizeof == 8) // C LP64
+        version = ARCH_WANT_SYS_CLONE3;
+}
 
 private enum bool ARCH_WANT_SYNC_FILE_RANGE2 = SYSCALL_COMPAT || (size_t.sizeof < 8);
 
