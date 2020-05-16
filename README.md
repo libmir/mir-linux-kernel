@@ -41,5 +41,7 @@ Currently we have syscall numbers for:
 * HP PA-RISC, 64-bit
 * SuperH
 * Alpha
+* RISC-V 32-bit
+* RISC-V 64-bit
 
 This compares favorably to the [list of architectures](https://wiki.dlang.org/Compilers) supported by the various D compilers, but currently our test suite only has x86 and x86-64 machines in it which is how we got into this mess in the first place. Caveat lector. We'll try to fix problems as we discover them and the set of files included may grow as we need more things.

@@ -22,4 +22,6 @@ else version (HPPA64) public import mir.linux.arch.hppa64.uapi._asm.unistd;
 else version (MIPS_O32) public import mir.linux.arch.mips_o32.uapi._asm.unistd;
 else version (MIPS_N32) public import mir.linux.arch.mips_n32.uapi._asm.unistd;
 else version (MIPS64) public import mir.linux.arch.mips64.uapi._asm.unistd;
+else version (RISCV32) public import mir.linux.arch.riscv32.uapi._asm.unistd;
+else version (RISCV64) public import mir.linux.arch.riscv64.uapi._asm.unistd;
 else pragma(msg, "Linux syscall constants not known for target architecture!");
