@@ -11,12 +11,17 @@ version(AArch64)
 {
     version = ARCH_WANT_RENAMEAT;
     version = ARCH_WANT_SYS_CLONE3;
+    version = ARCH_WANT_MEMFD_SECRET;
 }
 version (RISCV64)
 {
-    import core.stdc.config : c_long;
-    static if ((void*).sizeof == 8 && c_long.sizeof == 8) // C LP64
-        version = ARCH_WANT_SYS_CLONE3;
+    version = ARCH_WANT_SYS_CLONE3;
+    version = ARCH_WANT_MEMFD_SECRET;
+}
+version (RISCV32)
+{
+    version = ARCH_WANT_SYS_CLONE3;
+    version = ARCH_WANT_MEMFD_SECRET;
 }
 
 private enum bool ARCH_WANT_SYNC_FILE_RANGE2 = SYSCALL_COMPAT || (size_t.sizeof < 8);
@@ -349,10 +354,24 @@ enum NR_fsmount = 432;
 enum NR_fspick = 433;
 enum NR_pidfd_open = 434;
 version (ARCH_WANT_SYS_CLONE3) enum NR_clone3 = 435;
+enum NR_close_range = 436;
+
 enum NR_openat2 = 437;
 enum NR_pidfd_getfd = 438;
+enum NR_faccessat2 = 439;
+enum NR_process_madvise = 440;
+enum NR_epoll_pwait2 = 441;
+enum NR_mount_setattr = 442;
+enum NR_quotactl_fd = 443;
 
-//enum NR_syscalls = 292;
+enum NR_landlock_create_ruleset = 444;
+enum NR_landlock_add_rule = 445;
+enum NR_landlock_restrict_self = 446;
+
+version (ARCH_WANT_MEMFD_SECRET) enum NR_memfd_secret = 447;
+enum NR_process_mrelease = 448;
+
+//enum NR_syscalls = 449;
 version(ARCH_WANT_SYSCALL_NO_AT) enum NR_open = 1024;
 version(ARCH_WANT_SYSCALL_NO_AT) enum NR_link = 1025;
 version(ARCH_WANT_SYSCALL_NO_AT) enum NR_unlink = 1026;
